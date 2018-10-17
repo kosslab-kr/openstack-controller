@@ -67,15 +67,15 @@ public class NavigationActivity extends AppCompatActivity {
                 switch(item.getItemId()){
                     case R.id.menu_server:
                         getSupportActionBar().setTitle("Instance");
-                        replaceFragment(NovaFragment.newInstance());
+                        replaceFragment(NovaFragment.newInstance(), false);
                         break;
                     case R.id.menu_image:
                         getSupportActionBar().setTitle("Image");
-                        replaceFragment(GlanceFragment.newInstance());
+                        replaceFragment(GlanceFragment.newInstance(), false);
                         break;
                     case R.id.menu_network:
                         getSupportActionBar().setTitle("Network");
-                        replaceFragment(NeutronFragment.newInstance());
+                        replaceFragment(NeutronFragment.newInstance(), false);
                         break;
                 }
                 drawer.closeDrawer(GravityCompat.START);
@@ -84,10 +84,13 @@ public class NavigationActivity extends AppCompatActivity {
         });
     }
 
-    private void replaceFragment(Fragment fragment) {
+    public void replaceFragment(Fragment fragment, boolean child) {
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        if(child)
+            fragmentTransaction.addToBackStack(null);
         fragmentTransaction.replace(R.id.drawer_layout, fragment).commit();
+
     }
 
     @Override
@@ -101,7 +104,11 @@ public class NavigationActivity extends AppCompatActivity {
     public void onBackPressed() {
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-        } else {
+        } else if (cChildFragment){
+
+            cChildFragment = false;
+        }
+        else {
             super.onBackPressed();
         }
     }

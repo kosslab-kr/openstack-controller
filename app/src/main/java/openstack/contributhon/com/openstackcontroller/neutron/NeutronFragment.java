@@ -62,8 +62,6 @@ public class NeutronFragment extends Fragment {
             public void onResponse(Call<NetworkList> call, Response<NetworkList> response) {
                 if (response.isSuccessful()) {
                     NetworkList list = response.body();
-                    for(NetworkVO e : list.getNetworks())
-                        Log.e(MY_TAG,"test : " + e.name);
                     mAdapter = new NetworkAdapter(getContext(), list.getNetworks());
                     mListView.setAdapter(mAdapter);
                 } else

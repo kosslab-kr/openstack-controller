@@ -7,4 +7,5 @@ public class NetworkVO {
     public String name;
     public String provider;
     public String status;
+    public String id;
 }

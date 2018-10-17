@@ -9,7 +9,6 @@ import openstack.contributhon.com.openstackcontroller.glance.ImageVO;
 public class NetworkList {
     @SerializedName("networks")
     private ArrayList<NetworkVO> networks;
-
     public ArrayList<NetworkVO> getNetworks() {
         return networks;
     }

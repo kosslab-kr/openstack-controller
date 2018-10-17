@@ -20,7 +20,6 @@ public class ServerAdapter extends ArrayAdapter<ServerVO> {
         TextView hostText;
         TextView userText;
         TextView dateText;
-        LinearLayout expandArea;
     }
 
     public ServerAdapter(@NonNull Context context, ArrayList<ServerVO> datas) {
@@ -37,7 +36,6 @@ public class ServerAdapter extends ArrayAdapter<ServerVO> {
             viewHolder.hostText = convertView.findViewById(R.id.row_nova_name);
             viewHolder.userText = convertView.findViewById(R.id.row_nova_power);
             viewHolder.dateText = convertView.findViewById(R.id.row_nova_status);
-            viewHolder.expandArea = convertView.findViewById(R.id.row_nova_hidden);
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
@@ -46,7 +44,6 @@ public class ServerAdapter extends ArrayAdapter<ServerVO> {
         viewHolder.hostText.setText(vo.name);
         viewHolder.userText.setText(vo.power);
         viewHolder.dateText.setText(vo.status);
-        viewHolder.expandArea.setVisibility(vo.isExpand ? View.VISIBLE : View.GONE);
         return convertView;
     }
 }

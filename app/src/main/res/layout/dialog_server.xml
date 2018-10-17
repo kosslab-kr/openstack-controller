@@ -13,9 +13,9 @@
         android:textStyle="bold"
         />
     <TextView
-        android:id="@+id/server_edit"
+        android:id="@+id/server_update"
         android:layout_margin="10dp"
-        android:text="Edit"
+        android:text="Update"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="20sp"

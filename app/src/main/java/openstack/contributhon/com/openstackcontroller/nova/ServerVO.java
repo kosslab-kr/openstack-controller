@@ -8,7 +8,12 @@ public class ServerVO {
     public String status;
     public String power;
     public String id;
-
-    public boolean isExpand = false;
-
+    public String address;
+    public String created;
+    public String updated;
+    public String accessIPv4;
+    public String accessIPv6;
+    public String image;
+    public String user_id;
+    public String key_name;
 }

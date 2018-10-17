@@ -7,4 +7,5 @@ public class ImageVO {
     public String name;
     public String disk_format;
     public String status;
+    public String id;
 }
