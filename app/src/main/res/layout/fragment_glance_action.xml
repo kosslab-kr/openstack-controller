@@ -16,24 +16,8 @@
         android:layout_width="match_parent"
         />
     <Button
-        android:id="@+id/action_start"
+        android:id="@+id/action_activate"
         style="@style/ActionMyButton"
-        android:text="Start"/>
-    <Button
-        android:id="@+id/action_reboot"
-        android:text="Reboot"
-        style="@style/ActionMyButton" />
-    <Button
-        android:id="@+id/action_rebuild"
-        android:text="Rebuild"
-        style="@style/ActionMyButton" />
-    <Button
-        android:id="@+id/action_suspend"
-        android:text="Suspend"
-        style="@style/ActionMyButton"/>
-    <Button
-        android:id="@+id/action_lock"
-        android:text="Lock"
-        style="@style/ActionMyButton" />
+        android:text="Activate"/>
 
 </LinearLayout>

@@ -5,6 +5,7 @@ public class Config {
     public static String cToken;
     public static String cUser;
     public static String cHost;
-    public static boolean cChildFragment = false;
     public static String cDetailId;
+    public static int cCurrentFragmentId;
+    public static boolean cIsDetail = false;
 }

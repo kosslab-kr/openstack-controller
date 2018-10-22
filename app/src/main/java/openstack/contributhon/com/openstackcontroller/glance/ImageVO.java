@@ -7,5 +7,13 @@ public class ImageVO {
     public String name;
     public String disk_format;
     public String status;
+    public String container_format;
+    public String visibility;
+    public String min_disk;
+    public String created_at;
+    public String size;
     public String id;
+    public String os_hidden;
+    public String virtual_size;
+    public String updated_at;
 }

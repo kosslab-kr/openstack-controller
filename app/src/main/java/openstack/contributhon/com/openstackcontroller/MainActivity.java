@@ -1,9 +1,12 @@
 package openstack.contributhon.com.openstackcontroller;
 
 import android.content.Intent;
+import android.support.design.widget.FloatingActionButton;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -16,9 +19,8 @@ import io.realm.Realm;
 import io.realm.RealmConfiguration;
 import io.realm.RealmResults;
 import okhttp3.ResponseBody;
-import openstack.contributhon.com.openstackcontroller.Keystone.IKeystone;
-import openstack.contributhon.com.openstackcontroller.Keystone.KeyStone;
 
+import openstack.contributhon.com.openstackcontroller.nova.Fragment.InstanceList;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -39,7 +41,15 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        ListView listview = findViewById(R.id.session_list);
+        FloatingActionButton fab = findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                userDialog(0);
+            }
+        });
+
+        ListView listview = findViewById(R.id.list);
         Realm.init(this);
         RealmConfiguration realmConfig = new RealmConfiguration.Builder().deleteRealmIfMigrationNeeded().build();
         mRealm = Realm.getInstance(realmConfig);
@@ -64,7 +74,6 @@ public class MainActivity extends AppCompatActivity {
                 checkConnection(item.host, item.domain, item.user, item.passwd, item.id);
             }
         });
-
     }
 
     @Override
@@ -178,8 +187,8 @@ public class MainActivity extends AppCompatActivity {
                 .baseUrl(host)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
-        IKeystone keystone = retrofit.create(IKeystone.class);
-        Call<ResponseBody> call = keystone.getToken(KeyStone.getToken(domain, user, password));
+        IRestApi keystone = retrofit.create(IRestApi.class);
+        Call<ResponseBody> call = keystone.getToken(MakeBody.getToken(domain, user, password));
         call.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
@@ -201,7 +210,4 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    public void addSession(View view) {
-        userDialog(0);
-    }
 }

@@ -1,57 +1,44 @@
-package openstack.contributhon.com.openstackcontroller.neutron;
+package openstack.contributhon.com.openstackcontroller.nova.Fragment;
 
-import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-import openstack.contributhon.com.openstackcontroller.ErrorCode;
 import openstack.contributhon.com.openstackcontroller.JsonConverter;
 import openstack.contributhon.com.openstackcontroller.MakeBody;
 import openstack.contributhon.com.openstackcontroller.MyList;
 import openstack.contributhon.com.openstackcontroller.R;
+import openstack.contributhon.com.openstackcontroller.nova.adapter.FlavorAdapter;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 import static openstack.contributhon.com.openstackcontroller.Config.*;
 
-public class NetworkList extends MyList {
+public class FlavorList extends MyList {
 
-    private NetworkAdapter mAdapter;
+    private FlavorAdapter mAdapter;
 
-    public static NetworkList newInstance() {
-        return new NetworkList();
-    }
-
-    @Nullable
-    @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        String[] host = cHost.split(":");
-        host[1] = "http:" + host[1] + ":9696";
-        mHost = host[1];
-        return super.onCreateView(inflater, container, savedInstanceState);
+    public static FlavorList newInstance() {
+        return new FlavorList();
     }
 
     public void addDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        View view = getLayoutInflater().inflate(R.layout.dialog_addnetwork, null);
+        View view = getLayoutInflater().inflate(R.layout.dialog_addflavor, null);
         Button addButton = view.findViewById(R.id.btnAdd);
         final EditText nameEdit = view.findViewById(R.id.name);
-        final Spinner adminSpinner = view.findViewById(R.id.admin_state_up);
-        final EditText mtuedit = view.findViewById(R.id.mtu);
+        final EditText ramEdit = view.findViewById(R.id.ram);
+        final EditText vcpusEdit = view.findViewById(R.id.vcpus);
+        final EditText diskEdit = view.findViewById(R.id.disk);
 
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Call<Void> call = mInterface.createNetwork(cToken, MakeBody.createNetwork(nameEdit.getText().toString(), adminSpinner.getSelectedItem().toString(), mtuedit.getText().toString()));
+                Call<Void> call = mInterface.createFlavor(cToken, MakeBody.createFlavor(nameEdit.getText().toString(), ramEdit.getText().toString(), vcpusEdit.getText().toString(), diskEdit.getText().toString()));
                 call.enqueue(new Callback<Void>() {
                     @Override
                     public void onResponse(Call<Void> call, Response<Void> response) {
@@ -95,7 +82,7 @@ public class NetworkList extends MyList {
         delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Call<Void> call = mInterface.deleteNetwork(cToken, mAdapter.getItem(pos).id);
+                Call<Void> call = mInterface.deleteFlavor(cToken, mAdapter.getItem(pos).id);
                 call.enqueue(new Callback<Void>() {
                     @Override
                     public void onResponse(Call<Void> call, Response<Void> response) {
@@ -104,7 +91,7 @@ public class NetworkList extends MyList {
                             getList();
                             mDialog.dismiss();
                         } else {
-                            Toast.makeText(getContext(), ErrorCode.gete(response.code()), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getContext(), "Connect Error!!", Toast.LENGTH_SHORT).show();
                         }
                     }
 
@@ -127,15 +114,14 @@ public class NetworkList extends MyList {
         cDetailId = mAdapter.getItem(position).id;
     }
 
-    @Override
-    public void getList(){
-        Call<JsonConverter> call = mInterface.getNetworkList(cToken);
+    public void getList() {
+        Call<JsonConverter> call = mInterface.getFlavorList(cToken);
         call.enqueue(new Callback<JsonConverter>() {
             @Override
             public void onResponse(Call<JsonConverter> call, Response<JsonConverter> response) {
                 if (response.isSuccessful()) {
                     JsonConverter list = response.body();
-                    mAdapter = new NetworkAdapter(getContext(), list.getNetworks());
+                    mAdapter = new FlavorAdapter(getContext(), list.getFlavors());
                     mListView.setAdapter(mAdapter);
                 } else
                     Toast.makeText(getContext(), "Connect Error!!", Toast.LENGTH_SHORT).show();

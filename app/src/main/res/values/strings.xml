@@ -2,4 +2,31 @@
     <string name="app_name">OpenStackController</string>
     <string name="drawer_open">open drawer</string>
     <string name="drawer_close">close drawer</string>
+    <string-array name="bool">
+    <item>true</item>
+    <item>false</item>
+</string-array>
+
+    <string-array name="image_container">
+        <item>ami</item>
+        <item>ari</item>
+        <item>aki</item>
+        <item>bare</item>
+        <item>ovf</item>
+        <item>ova</item>
+        <item>docker</item>
+    </string-array>
+    <string-array name="image_disk">
+        <item>ami</item>
+        <item>ari</item>
+        <item>aki</item>
+        <item>vhd</item>
+        <item>vhdx</item>
+        <item>vmdk</item>
+        <item>raw</item>
+        <item>qcow2</item>
+        <item>vdi</item>
+        <item>ploop </item>
+        <item>iso</item>
+    </string-array>
 </resources>

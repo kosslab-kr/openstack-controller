@@ -12,6 +12,7 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -19,9 +20,12 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
-import openstack.contributhon.com.openstackcontroller.glance.GlanceFragment;
-import openstack.contributhon.com.openstackcontroller.neutron.NeutronFragment;
-import openstack.contributhon.com.openstackcontroller.nova.NovaFragment;
+import openstack.contributhon.com.openstackcontroller.glance.ImageList;
+import openstack.contributhon.com.openstackcontroller.neutron.NetworkList;
+import openstack.contributhon.com.openstackcontroller.neutron.RouterList;
+import openstack.contributhon.com.openstackcontroller.nova.Fragment.KeypairList;
+import openstack.contributhon.com.openstackcontroller.nova.Fragment.FlavorList;
+import openstack.contributhon.com.openstackcontroller.nova.Fragment.InstanceList;
 
 import static openstack.contributhon.com.openstackcontroller.Config.*;
 
@@ -36,7 +40,7 @@ public class NavigationActivity extends AppCompatActivity {
         setContentView(R.layout.activity_navigation);
 
         getSupportActionBar().setTitle("Instance");
-
+        cCurrentFragmentId = R.id.menu_instance;
         LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         drawer = (DrawerLayout) inflater.inflate(R.layout.navigation_drawer, null);
 
@@ -55,7 +59,7 @@ public class NavigationActivity extends AppCompatActivity {
         ((TextView)view.findViewById(R.id.header_user)).setText(cUser);
 
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.add(R.id.drawer_layout, NovaFragment.newInstance()).commit();
+        fragmentTransaction.add(R.id.drawer_layout, InstanceList.newInstance()).commit();
 
         toggle = new ActionBarDrawerToggle(this, drawer, R.string.drawer_open, R.string.drawer_close);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -64,33 +68,52 @@ public class NavigationActivity extends AppCompatActivity {
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                switch(item.getItemId()){
-                    case R.id.menu_server:
-                        getSupportActionBar().setTitle("Instance");
-                        replaceFragment(NovaFragment.newInstance(), false);
-                        break;
-                    case R.id.menu_image:
-                        getSupportActionBar().setTitle("Image");
-                        replaceFragment(GlanceFragment.newInstance(), false);
-                        break;
-                    case R.id.menu_network:
-                        getSupportActionBar().setTitle("Network");
-                        replaceFragment(NeutronFragment.newInstance(), false);
-                        break;
-                }
+                cCurrentFragmentId = item.getItemId();
+                cIsDetail = false;
+                replaceFragment();
                 drawer.closeDrawer(GravityCompat.START);
                 return false;
             }
         });
     }
 
-    public void replaceFragment(Fragment fragment, boolean child) {
+    public void replaceFragment() {
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        if(child)
-            fragmentTransaction.addToBackStack(null);
-        fragmentTransaction.replace(R.id.drawer_layout, fragment).commit();
+        Fragment fragment = null;
 
+        if(cIsDetail){
+            fragment = TabFragment.newInstance();
+        }else {
+            switch (cCurrentFragmentId) {
+                case R.id.menu_instance:
+                    getSupportActionBar().setTitle("Instance");
+                    fragment = InstanceList.newInstance();
+                    break;
+                case R.id.menu_flavor:
+                    getSupportActionBar().setTitle("Flavor");
+                    fragment = FlavorList.newInstance();
+                    break;
+                case R.id.menu_keypair:
+                    getSupportActionBar().setTitle("Keypair");
+                    fragment = KeypairList.newInstance();
+                    break;
+                case R.id.menu_image:
+                    getSupportActionBar().setTitle("Image");
+                    fragment = ImageList.newInstance();
+                    break;
+                case R.id.menu_network:
+                    getSupportActionBar().setTitle("Network");
+                    fragment = NetworkList.newInstance();
+                    break;
+                case R.id.menu_router:
+                    getSupportActionBar().setTitle("Router");
+                    fragment = RouterList.newInstance();
+                    break;
+            }
+        }
+
+        fragmentTransaction.replace(R.id.drawer_layout, fragment).commit();
     }
 
     @Override
@@ -104,9 +127,9 @@ public class NavigationActivity extends AppCompatActivity {
     public void onBackPressed() {
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-        } else if (cChildFragment){
-
-            cChildFragment = false;
+        } else if (cIsDetail){
+            cIsDetail = false;
+            replaceFragment();
         }
         else {
             super.onBackPressed();

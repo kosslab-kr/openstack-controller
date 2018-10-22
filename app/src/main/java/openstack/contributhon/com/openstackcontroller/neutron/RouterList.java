@@ -1,5 +1,6 @@
 package openstack.contributhon.com.openstackcontroller.neutron;
 
+
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
@@ -20,15 +21,14 @@ import openstack.contributhon.com.openstackcontroller.R;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-
 import static openstack.contributhon.com.openstackcontroller.Config.*;
 
-public class NetworkList extends MyList {
+public class RouterList extends MyList {
 
-    private NetworkAdapter mAdapter;
+    private RouterAdapter mAdapter;
 
-    public static NetworkList newInstance() {
-        return new NetworkList();
+    public static RouterList newInstance() {
+        return new RouterList();
     }
 
     @Nullable
@@ -42,16 +42,15 @@ public class NetworkList extends MyList {
 
     public void addDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        View view = getLayoutInflater().inflate(R.layout.dialog_addnetwork, null);
+        View view = getLayoutInflater().inflate(R.layout.dialog_addrouter, null);
         Button addButton = view.findViewById(R.id.btnAdd);
         final EditText nameEdit = view.findViewById(R.id.name);
         final Spinner adminSpinner = view.findViewById(R.id.admin_state_up);
-        final EditText mtuedit = view.findViewById(R.id.mtu);
 
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Call<Void> call = mInterface.createNetwork(cToken, MakeBody.createNetwork(nameEdit.getText().toString(), adminSpinner.getSelectedItem().toString(), mtuedit.getText().toString()));
+                Call<Void> call = mInterface.createRouter(cToken, MakeBody.createRouter(nameEdit.getText().toString(), adminSpinner.getSelectedItem().toString()));
                 call.enqueue(new Callback<Void>() {
                     @Override
                     public void onResponse(Call<Void> call, Response<Void> response) {
@@ -95,7 +94,7 @@ public class NetworkList extends MyList {
         delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Call<Void> call = mInterface.deleteNetwork(cToken, mAdapter.getItem(pos).id);
+                Call<Void> call = mInterface.deleteRouter(cToken, mAdapter.getItem(pos).id);
                 call.enqueue(new Callback<Void>() {
                     @Override
                     public void onResponse(Call<Void> call, Response<Void> response) {
@@ -114,7 +113,6 @@ public class NetworkList extends MyList {
                         Toast.makeText(getContext(), "Connect Error!! : " + t.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
-
             }
         });
 
@@ -127,15 +125,14 @@ public class NetworkList extends MyList {
         cDetailId = mAdapter.getItem(position).id;
     }
 
-    @Override
     public void getList(){
-        Call<JsonConverter> call = mInterface.getNetworkList(cToken);
+        Call<JsonConverter> call = mInterface.getRouterList(cToken);
         call.enqueue(new Callback<JsonConverter>() {
             @Override
             public void onResponse(Call<JsonConverter> call, Response<JsonConverter> response) {
                 if (response.isSuccessful()) {
                     JsonConverter list = response.body();
-                    mAdapter = new NetworkAdapter(getContext(), list.getNetworks());
+                    mAdapter = new RouterAdapter(getContext(), list.getRouters());
                     mListView.setAdapter(mAdapter);
                 } else
                     Toast.makeText(getContext(), "Connect Error!!", Toast.LENGTH_SHORT).show();
