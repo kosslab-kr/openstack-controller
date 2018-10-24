@@ -7,6 +7,8 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="10dp"
+    android:clipChildren="false"
+    android:clipToPadding="false"
     tools:context=".MainActivity">
 
     <android.support.v4.widget.SwipeRefreshLayout
@@ -21,7 +23,7 @@
             android:divider="@color/gray"
             android:dividerHeight="1dp"
             android:padding="10dp"
-            android:scrollbars="none"></ListView>
+            android:scrollbars="none" />
 
     </android.support.v4.widget.SwipeRefreshLayout>
 
@@ -31,6 +33,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="end|bottom"
         android:src="@drawable/ic_add"
+        app:elevation="6dp"
         app:fabSize="normal"
         app:rippleColor="#FFFFFF" />
 </FrameLayout>

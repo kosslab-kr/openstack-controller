@@ -6,7 +6,6 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -14,13 +13,12 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-
+import java.util.Calendar;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 import io.realm.RealmResults;
+import io.realm.Sort;
 import okhttp3.ResponseBody;
-
-import openstack.contributhon.com.openstackcontroller.nova.Fragment.InstanceList;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -50,11 +48,12 @@ public class MainActivity extends AppCompatActivity {
         });
 
         ListView listview = findViewById(R.id.list);
+        final SwipeRefreshLayout mSwipeRefreshLayout = findViewById(R.id.swipe_layout);
         Realm.init(this);
         RealmConfiguration realmConfig = new RealmConfiguration.Builder().deleteRealmIfMigrationNeeded().build();
         mRealm = Realm.getInstance(realmConfig);
 
-        RealmResults<SessionVO> vos = mRealm.where(SessionVO.class).findAll();
+        RealmResults<SessionVO> vos = mRealm.where(SessionVO.class).sort("date", Sort.DESCENDING).findAll();
         mAdapter = new SessionAdapter(vos);
         listview.setAdapter(mAdapter);
         listview.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
@@ -71,7 +70,15 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 SessionVO item = mAdapter.getItem(position);
-                checkConnection(item.host, item.domain, item.user, item.passwd, item.id);
+                checkConnection(item.address, item.domain, item.user, item.passwd, item.id);
+            }
+        });
+
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener(){
+            @Override
+            public void onRefresh() {
+                mAdapter.notifyDataSetChanged();
+                mSwipeRefreshLayout.setRefreshing(false);
             }
         });
     }
@@ -86,7 +93,7 @@ public class MainActivity extends AppCompatActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
         View view = getLayoutInflater().inflate(R.layout.dialog_session, null);
         final TextView host = view.findViewById(R.id.session_host);
-        host.setText(mAdapter.getItem(pos).host);
+        host.setText(mAdapter.getItem(pos).address);
 
         final TextView edit = view.findViewById(R.id.session_edit);
         final TextView delete = view.findViewById(R.id.session_delete);
@@ -121,31 +128,41 @@ public class MainActivity extends AppCompatActivity {
 
     public void userDialog(final int id) {
         AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-        View view = getLayoutInflater().inflate(R.layout.dialog_userinfo, null);
+        View view = getLayoutInflater().inflate(R.layout.dialog_addsession, null);
         Button addButton = view.findViewById(R.id.btnAdd);
 
-        final EditText host_et = view.findViewById(R.id.host);
-        final EditText domain_et = view.findViewById(R.id.domain);
-        final EditText user_et = view.findViewById(R.id.user);
-        final EditText password_et = view.findViewById(R.id.password);
+        final EditText nameEt = view.findViewById(R.id.name);
+        final EditText addressEt = view.findViewById(R.id.address);
+        final EditText domainEt = view.findViewById(R.id.domain);
+        final EditText userEt = view.findViewById(R.id.user);
+        final EditText passwordEt = view.findViewById(R.id.password);
 
         if (id > 0) {
             final SessionVO vo = mRealm.where(SessionVO.class)
                     .equalTo("id", id)
                     .findFirst();
-            host_et.setText(vo.host);
-            domain_et.setText(vo.domain);
-            user_et.setText(vo.user);
-            password_et.setText(vo.passwd);
+            nameEt.setText(vo.name);
+            addressEt.setText(vo.address);
+            domainEt.setText(vo.domain);
+            userEt.setText(vo.user);
+            passwordEt.setText(vo.passwd);
         }
 
         addButton.setOnClickListener(new View.OnClickListener() {
+            private String name, address, domain, user, password;
+
             @Override
             public void onClick(View v) {
-                final String host = host_et.getText().toString();
-                final String domain = domain_et.getText().toString();
-                final String user = user_et.getText().toString();
-                final String password = password_et.getText().toString();
+                name = nameEt.getText().toString();
+                address = addressEt.getText().toString();
+                domain = domainEt.getText().toString();
+                user = userEt.getText().toString();
+                password = passwordEt.getText().toString();
+
+                if(name.isEmpty() || address.isEmpty() || domain.isEmpty() || user.isEmpty() || password.isEmpty())
+                    return;
+
+                address = checkURL(address);
 
                 mRealm.executeTransaction(new Realm.Transaction() {
                     @Override
@@ -154,13 +171,13 @@ public class MainActivity extends AppCompatActivity {
                             final SessionVO vo = mRealm.where(SessionVO.class)
                                     .equalTo("id", id)
                                     .findFirst();
-                            vo.setAll(id, host, domain, user, password, null);
+                            vo.setAll(id, name, address, domain, user, password);
                             mRealm.insertOrUpdate(vo);
                         } else {
                             SessionVO vo = realm.createObject(SessionVO.class);
                             Number currentIdNum = realm.where(SessionVO.class).max("id");
                             vo.setAll((currentIdNum == null) ? 1 : currentIdNum.intValue() + 1,
-                                    host, domain, user, password, null);
+                                    name, address, domain, user, password);
                         }
                     }
                 });
@@ -180,8 +197,7 @@ public class MainActivity extends AppCompatActivity {
         return s;
     }
 
-    private void checkConnection(final String host_, final String domain, final String user, final String password, final int id) {
-        final String host = checkURL(host_);
+    private void checkConnection(final String host, final String domain, final String user, final String password, final int id) {
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(host)
@@ -196,6 +212,16 @@ public class MainActivity extends AppCompatActivity {
                     cToken = response.headers().get("X-Subject-Token");
                     cUser = user;
                     cHost = host;
+                    mRealm.executeTransaction(new Realm.Transaction() {
+                        @Override
+                        public void execute(Realm realm) {
+                            final SessionVO vo = mRealm.where(SessionVO.class)
+                                    .equalTo("id", id)
+                                    .findFirst();
+                            vo.setDate(Calendar.getInstance().getTime());
+                            mRealm.insertOrUpdate(vo);
+                        }
+                    });
                     Intent intent = new Intent(MainActivity.this,NavigationActivity.class);
                     startActivity(intent);
                     overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
@@ -209,5 +235,4 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-
 }

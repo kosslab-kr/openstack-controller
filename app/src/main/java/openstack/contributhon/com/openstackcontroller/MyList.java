@@ -38,7 +38,6 @@ public class MyList extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        Log.e(MY_TAG,"onCreateView");
         View view = inflater.inflate(R.layout.activity_main,null);
         mListView = view.findViewById(R.id.list);
         FloatingActionButton fab = view.findViewById(R.id.fab);

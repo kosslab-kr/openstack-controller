@@ -1,21 +1,27 @@
 package openstack.contributhon.com.openstackcontroller;
 
+import java.util.Date;
 import io.realm.RealmObject;
 
 public class SessionVO extends RealmObject {
     public int id;
-    public String host;
+    public String name;
+    public String address;
     public String domain;
     public String user;
     public String passwd;
-    public String date;
+    public Date date;
 
-    public void setAll(int id, String host, String domain, String user, String passwd, String date){
+    public void setAll(int id, String name, String address, String domain, String user, String passwd){
         this.id = id;
-        this.host = host;
+        this.name = name;
+        this.address = address;
         this.domain = domain;
         this.user = user;
         this.passwd = passwd;
-        this.date = date;
+    }
+
+    public void setDate(Date date){
+        this.date  = date;
     }
 }
