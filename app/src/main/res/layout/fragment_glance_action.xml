@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="10dp"
-    tools:context=".nova.Fragment.InstanceActionFragment">
+    tools:context=".action.InstanceActionFragment">
     <TextView
         android:id="@+id/action_logo"
         android:layout_margin="5dp"

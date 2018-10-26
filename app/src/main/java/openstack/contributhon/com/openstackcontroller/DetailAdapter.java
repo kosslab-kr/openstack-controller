@@ -14,14 +14,16 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+
 public class DetailAdapter extends ArrayAdapter<Pair<String, String>> {
     private class ViewHolder {
         TextView keyField;
         TextView valueField;
     }
 
-    public DetailAdapter(@NonNull Context context, int resource) {
-        super(context, resource);
+    public DetailAdapter(@NonNull Context context, int resource, ArrayList<Pair<String, String>> data) {
+        super(context, resource, data);
     }
 
     @NonNull

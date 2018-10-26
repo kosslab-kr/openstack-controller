@@ -12,11 +12,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import static openstack.contributhon.com.openstackcontroller.Config.DETAIL;
 import static openstack.contributhon.com.openstackcontroller.Config.MY_TAG;
+import static openstack.contributhon.com.openstackcontroller.Config.cCurrentTab;
 
 public class TabFragment extends Fragment {
 
     private Float mElevation;
+    private TabAdapter mTabAdapter;
 
     public static TabFragment newInstance() {
         return new TabFragment();
@@ -31,13 +34,14 @@ public class TabFragment extends Fragment {
         TabLayout tabLayout = view.findViewById(R.id.tabs);
         tabLayout.setElevation(mElevation);
         final ViewPager viewPager = view.findViewById(R.id.main_viewpager);
-
-        TabAdapter pagerAdapter = new TabAdapter(getFragmentManager(), tabLayout.getTabCount());
-        viewPager.setAdapter(pagerAdapter);
+        mTabAdapter = new TabAdapter(getFragmentManager(), tabLayout.getTabCount());
+        viewPager.setAdapter(mTabAdapter);
+        cCurrentTab = DETAIL;
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
+                cCurrentTab = tab.getPosition();
                 viewPager.setCurrentItem(tab.getPosition());
             }
             @Override
@@ -52,6 +56,7 @@ public class TabFragment extends Fragment {
 
     @Override
     public void onDestroyView() {
+        mTabAdapter.close();
         ((AppCompatActivity)getActivity()).getSupportActionBar().setElevation(mElevation);
         super.onDestroyView();
     }

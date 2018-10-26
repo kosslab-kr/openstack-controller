@@ -31,11 +31,11 @@ public class ServerAdapter extends ArrayAdapter<ServerVO> {
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         ViewHolder viewHolder;
         if (convertView == null) {
-            convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_nova, parent, false);
+            convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.row, parent, false);
             viewHolder = new ViewHolder();
-            viewHolder.hostText = convertView.findViewById(R.id.row_nova_name);
-            viewHolder.userText = convertView.findViewById(R.id.row_nova_power);
-            viewHolder.dateText = convertView.findViewById(R.id.row_nova_status);
+            viewHolder.hostText = convertView.findViewById(R.id.row_title);
+            viewHolder.userText = convertView.findViewById(R.id.row_below);
+            viewHolder.dateText = convertView.findViewById(R.id.row_option);
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) convertView.getTag();

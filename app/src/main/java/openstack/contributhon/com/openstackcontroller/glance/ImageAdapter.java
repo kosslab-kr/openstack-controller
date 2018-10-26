@@ -33,11 +33,11 @@ public class ImageAdapter extends ArrayAdapter<ImageVO> {
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         ViewHolder viewHolder;
         if (convertView == null) {
-            convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_glance, parent, false);
+            convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.row, parent, false);
             viewHolder = new ViewHolder();
-            viewHolder.hostText = convertView.findViewById(R.id.row_host1);
-            viewHolder.userText = convertView.findViewById(R.id.row_user1);
-            viewHolder.dateText = convertView.findViewById(R.id.row_date1);
+            viewHolder.hostText = convertView.findViewById(R.id.row_title);
+            viewHolder.userText = convertView.findViewById(R.id.row_below);
+            viewHolder.dateText = convertView.findViewById(R.id.row_option);
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) convertView.getTag();

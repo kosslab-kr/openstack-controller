@@ -13,7 +13,6 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-import openstack.contributhon.com.openstackcontroller.ErrorCode;
 import openstack.contributhon.com.openstackcontroller.JsonConverter;
 import openstack.contributhon.com.openstackcontroller.MakeBody;
 import openstack.contributhon.com.openstackcontroller.MyList;
@@ -103,7 +102,7 @@ public class RouterList extends MyList {
                             getList();
                             mDialog.dismiss();
                         } else {
-                            Toast.makeText(getContext(), ErrorCode.gete(response.code()), Toast.LENGTH_SHORT).show();
+                            //Toast.makeText(getContext(), ErrorCode.gete(response.code()), Toast.LENGTH_SHORT).show();
                         }
                     }
 

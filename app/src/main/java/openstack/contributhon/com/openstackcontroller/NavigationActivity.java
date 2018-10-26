@@ -112,7 +112,6 @@ public class NavigationActivity extends AppCompatActivity {
                     break;
             }
         }
-
         fragmentTransaction.replace(R.id.drawer_layout, fragment).commit();
     }
 

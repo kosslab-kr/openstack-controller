@@ -31,7 +31,6 @@ public class MyList extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.e(MY_TAG,"onCreate");
         mHost = cHost;
     }
 

@@ -31,11 +31,11 @@ public class NetworkAdapter extends ArrayAdapter<NetworkVO> {
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         ViewHolder viewHolder;
         if (convertView == null) {
-            convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_neutron, parent, false);
+            convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.row, parent, false);
             viewHolder = new ViewHolder();
-            viewHolder.hostText = convertView.findViewById(R.id.row__neutron_host);
-            viewHolder.userText = convertView.findViewById(R.id.row__neutron_user);
-            viewHolder.dateText = convertView.findViewById(R.id.row__neutron_date);
+            viewHolder.hostText = convertView.findViewById(R.id.row_title);
+            viewHolder.userText = convertView.findViewById(R.id.row_below);
+            viewHolder.dateText = convertView.findViewById(R.id.row_option);
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) convertView.getTag();

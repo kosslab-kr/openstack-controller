@@ -20,13 +20,13 @@ public interface IRestApi {
     Call<JsonConverter> getServerDetail(@Header("X-Auth-Token") String token, @Path("server_id") String id);
 
     @POST("/compute/v2.1/servers")
-    Call<Void> createServer(@Header("X-Auth-Token") String token, @Body RequestBody body);
+    Call<ResponseBody> createServer(@Header("X-Auth-Token") String token, @Body RequestBody body);
 
     @DELETE("/compute/v2.1/servers/{server_id}")
     Call<Void> deleteServer(@Header("X-Auth-Token") String token, @Path("server_id") String id);
 
     @POST("/compute/v2.1/servers/{server_id}/action")
-    Call<Void> action(@Header("X-Auth-Token") String token, @Path("server_id") String id, @Body RequestBody body);
+    Call<ResponseBody> action(@Header("X-Auth-Token") String token, @Path("server_id") String id, @Body RequestBody body);
 
     @GET("/compute/v2.1/flavors")
     Call<JsonConverter> getFlavorList(@Header("X-Auth-Token") String token);
@@ -90,10 +90,10 @@ public interface IRestApi {
     Call<Void> createImage(@Header("X-Auth-Token") String token, @Body RequestBody body);
 
     @POST("/image/v2/images/{image_id}/actions/deactivate")
-    Call<Void> deactivate(@Header("X-Auth-Token") String token, @Path("image_id") String id);
+    Call<ResponseBody> deactivate(@Header("X-Auth-Token") String token, @Path("image_id") String id);
 
     @POST("/image/v2/images/{image_id}/actions/reactivate")
-    Call<Void> reactivate(@Header("X-Auth-Token") String token, @Path("image_id") String id);
+    Call<ResponseBody> reactivate(@Header("X-Auth-Token") String token, @Path("image_id") String id);
 
     @DELETE("/image/v2/images/{image_id}")
     Call<Void> deleteImage(@Header("X-Auth-Token") String token, @Path("image_id") String id);

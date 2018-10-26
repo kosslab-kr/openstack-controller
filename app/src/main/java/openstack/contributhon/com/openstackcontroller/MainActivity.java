@@ -92,8 +92,8 @@ public class MainActivity extends AppCompatActivity {
     public void itemDialog(final int pos) {
         AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
         View view = getLayoutInflater().inflate(R.layout.dialog_session, null);
-        final TextView host = view.findViewById(R.id.session_host);
-        host.setText(mAdapter.getItem(pos).address);
+        final TextView host = view.findViewById(R.id.session_name);
+        host.setText(mAdapter.getItem(pos).name);
 
         final TextView edit = view.findViewById(R.id.session_edit);
         final TextView delete = view.findViewById(R.id.session_delete);

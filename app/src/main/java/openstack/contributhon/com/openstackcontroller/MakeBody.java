@@ -8,8 +8,8 @@ import okhttp3.RequestBody;
 import static openstack.contributhon.com.openstackcontroller.Config.MY_TAG;
 
 public class MakeBody {
-    public static RequestBody createServer(String name, String imageId, String flavorId, String networkId){
-        String value = "{\"server\":{\"name\":\"" + name + "\",\"imageRef\":\"" + imageId + "\",\"flavorRef\":\"" + flavorId + "\",\"networks\":[{\"uuid\" : \""+networkId+"\"}]}}";
+    public static RequestBody createServer(String name, String imageId, String flavorId, String networkId, String keypairName){
+        String value = "{\"server\":{\"name\":\"" + name + "\",\"key_name\":\"" + keypairName + "\",\"imageRef\":\"" + imageId + "\",\"flavorRef\":\"" + flavorId + "\",\"networks\":[{\"uuid\" : \""+networkId+"\"}]}}";
         RequestBody body = RequestBody.create(MediaType.parse("text/plain"), value);
         Log.e(MY_TAG,value);
         return body;
@@ -17,6 +17,7 @@ public class MakeBody {
     public static RequestBody action(String action){
         String value = "{\"" + action + "\" : null}";
         RequestBody body = RequestBody.create(MediaType.parse("text/plain"), value);
+        Log.e(MY_TAG,value);
         return body;
     }
     public static RequestBody getToken(String domain, String user, String password){
